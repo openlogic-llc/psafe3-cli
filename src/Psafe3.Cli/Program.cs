@@ -87,26 +87,15 @@ namespace Psafe3.Cli
                     authenticator.CodeDigits = querydigits;
                 }
 
-                //if (qs["counter"] != null)
-                //{
-                //    long.TryParse(qs["counter"], out var counter);
-                //}
-
                 var issuer = qs["issuer"];
 
-                var label = "";
+                var beginIndex = value.IndexOf("otpauth://totp/", StringComparison.OrdinalIgnoreCase) +
+                                 "otpauth://totp/".Length;
 
-                if (string.IsNullOrEmpty(issuer) == false)
-                {
-                    label = issuer + (string.IsNullOrEmpty(label) == false ? " (" + label + ")" : string.Empty);
-                }
-
-                var serial = qs["serial"];
-
-                //if (string.IsNullOrEmpty(label) == false)
-                //{
-                //    this.Authenticator.Name = this.nameField.Text = label;
-                //}
+                var label =
+                    value.Substring(
+                        beginIndex,
+                        value.IndexOf('?', StringComparison.OrdinalIgnoreCase) - beginIndex);
 
                 var periods = qs["period"];
 
@@ -122,8 +111,6 @@ namespace Psafe3.Cli
 
                 Console.WriteLine($"{label}: {code}");
             }
-
-            Console.ReadKey();
         }
 
         public static NameValueCollection ParseQueryString(
